@@ -1,5 +1,6 @@
 package com.marc0x71.mvpsample;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
@@ -13,84 +14,98 @@ import com.marc0x71.mvpsample.mvp.MvpViewState;
  */
 public class MainPresenter extends MvpBasePresenter<MainView> {
 
-    public static final String NAME = "MainPresenter";
-    private static final String TAG = "MainPresenter";
-    private static final int SHOW_LOADING = 100;
-    private static final int SHOW_NUMBER = 101;
-    private static final int HIDE_LOADING = 102;
-    Handler handler;
-    Number number = new Number();
-    MvpViewState.ViewStateListener viewStateListener = new MvpViewState.ViewStateListener() {
-        @Override
-        public void apply(int operation, Parcelable data) {
-            switch (operation) {
-                case SHOW_LOADING:
-                    getView().showLoading();
-                    break;
-                case HIDE_LOADING:
-                    getView().hideLoading();
-                    break;
-                case SHOW_NUMBER:
-                    Number number = (Number) data;
-                    getView().show(number.getNumber());
-                    break;
-            }
-        }
+	public static final String NAME = "MainPresenter";
+	private static final String TAG = "MainPresenter";
+	private static final int SHOW_LOADING = 100;
+	private static final int SHOW_NUMBER = 101;
+	private static final int HIDE_LOADING = 102;
+	Handler handler;
+	Number number = new Number();
+	MvpViewState.ViewStateListener viewStateListener = new MvpViewState.ViewStateListener() {
+		@Override
+		public void apply(int operation, Parcelable data) {
+			switch (operation) {
+				case SHOW_LOADING:
+					getView().showLoading();
+					break;
+				case HIDE_LOADING:
+					getView().hideLoading();
+					break;
+				case SHOW_NUMBER:
+					Number number = (Number) data;
+					getView().show(number.getNumber());
+					break;
+			}
+		}
 
-    };
+	};
 
-    public MainPresenter() {
-        super();
-        setViewStateListener(viewStateListener);
-    }
+	public MainPresenter() {
+		super();
+		setViewStateListener(viewStateListener);
+	}
 
-    public void generate() {
-        getViewState().clear();
-        getView().showLoading();
-        getViewState().add(SHOW_LOADING, null);
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (isViewAttached()) {
-                    number.generate();
-                    Log.d(TAG, "updating view, new number=" + number);
-                    getView().show(number.getNumber());
-                    getViewState().add(SHOW_NUMBER, number);
-                    getView().hideLoading();
-                    getViewState().add(HIDE_LOADING, null);
-                } else {
-                    Log.d(TAG, "updating view skipped");
-                }
-            }
-        }, 5000);
-    }
+	public void generate() {
+		getViewState().begin();
 
-    @Override
-    protected MainView getNullView() {
-        return new MainView() {
-            @Override
-            public void show(int number) {
-            }
+		getView().showLoading();
+		getViewState().add(SHOW_LOADING, null);
 
-            @Override
-            public void showLoading() {
-            }
+		handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				number.generate();
+				Log.d(TAG, "updating view, new number=" + number);
 
-            @Override
-            public void hideLoading() {
-            }
+				getView().show(number.getNumber());
+				getViewState().add(SHOW_NUMBER, number);
 
-            @Override
-            public void initialize() {
+				getView().hideLoading();
+				getViewState().add(HIDE_LOADING, null);
 
-            }
-        };
-    }
+				getViewState().end();
+			}
+		}, 5000);
+	}
 
-    @Override
-    public void onNewInstance() {
-        super.onNewInstance();
-        getView().initialize();
-    }
+	@Override
+	protected MainView getNullView() {
+		return new MainView() {
+			@Override
+			public void show(int number) {
+			}
+
+			@Override
+			public void showLoading() {
+			}
+
+			@Override
+			public void hideLoading() {
+			}
+
+			@Override
+			public void initialize() {
+
+			}
+		};
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestroy");
+	}
+
+	@Override
+	public void onLoadInstanceState(Bundle bundle) {
+		super.onLoadInstanceState(bundle);
+		Log.d(TAG, "onLoadInstanceState");
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle bundle) {
+		super.onSaveInstanceState(bundle);
+		Log.d(TAG, "onSaveInstanceState");
+	}
 }

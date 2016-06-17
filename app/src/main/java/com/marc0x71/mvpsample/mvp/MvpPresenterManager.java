@@ -16,8 +16,8 @@ public class MvpPresenterManager {
     }
 
     public MvpPresenter get(String name) {
-        if (presenters.containsKey(name)) {
-            return presenters.get(name);
+		if (contains(name)) {
+			return presenters.get(name);
         }
         return null;
     }
@@ -29,5 +29,11 @@ public class MvpPresenterManager {
     public MvpPresenter add(String name, MvpPresenter presenter) {
         presenters.put(name, presenter);
         return presenter;
-    }
+	}
+
+	public void remove(String name) {
+		if (contains(name)) {
+			presenters.remove(name);
+		}
+	}
 }
