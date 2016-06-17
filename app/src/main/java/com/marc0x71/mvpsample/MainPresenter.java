@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.marc0x71.mvpsample.model.Number;
 import com.marc0x71.mvpsimple.mvp.presenter.MvpBasePresenter;
-import com.marc0x71.mvpsimple.mvp.viewstate.MvpViewState;
+import com.marc0x71.mvpsimple.mvp.viewstate.MvpViewStateHelper;
 
 /**
  * Created on 15/06/2016.
@@ -16,40 +16,26 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
 	public static final String NAME = "MainPresenter";
 	private static final String TAG = "MainPresenter";
-	private static final int SHOW_LOADING = 100;
-	private static final int SHOW_NUMBER = 101;
-	private static final int HIDE_LOADING = 102;
 	Handler handler;
 	Number number = new Number();
-	MvpViewState.ViewStateListener viewStateListener = new MvpViewState.ViewStateListener() {
-		@Override
-		public void apply(int operation, Parcelable data) {
-			switch (operation) {
-				case SHOW_LOADING:
-					getView().showLoading();
-					break;
-				case HIDE_LOADING:
-					getView().hideLoading();
-					break;
-				case SHOW_NUMBER:
-					Number number = (Number) data;
-					getView().show(number.getNumber());
-					break;
-			}
-		}
-
-	};
+    MvpViewStateHelper viewStateHelper;
 
 	public MainPresenter() {
 		super();
-		setViewStateListener(viewStateListener);
-	}
+        setViewStateListener(null);
+        viewStateHelper = new MvpViewStateHelper(getViewState());
+    }
 
-	public void generate() {
-		getViewState().begin();
 
-		getView().showLoading();
-		getViewState().add(SHOW_LOADING, null);
+    public void generate() {
+        getViewState().begin();
+
+        viewStateHelper.add(new MvpViewStateHelper.ViewUpdater() {
+            @Override
+            public void apply() {
+                getView().showLoading();
+            }
+        });
 
 		handler = new Handler();
 		handler.postDelayed(new Runnable() {
@@ -58,11 +44,20 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 				number.generate();
 				Log.d(TAG, "updating view, new number=" + number);
 
-				getView().show(number.getNumber());
-				getViewState().add(SHOW_NUMBER, number);
+                viewStateHelper.add(new MvpViewStateHelper.ViewUpdaterWithData(number) {
+                    @Override
+                    protected void apply(Parcelable data) {
+                        Number number = (Number) data;
+                        getView().show(number.getNumber());
+                    }
+                });
 
-				getView().hideLoading();
-				getViewState().add(HIDE_LOADING, null);
+                viewStateHelper.add(new MvpViewStateHelper.ViewUpdater() {
+                    @Override
+                    public void apply() {
+                        getView().hideLoading();
+                    }
+                });
 
 				getViewState().end();
 			}

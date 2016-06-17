@@ -10,9 +10,10 @@ import java.util.List;
  */
 public class MvpViewState {
 
-    List<State> states = new ArrayList<>();
-    ViewStateListener viewStateListener;
-    ViewStateProvider viewStateProvider;
+    private List<State> states = new ArrayList<>();
+    private ViewStateListener viewStateListener;
+    private ViewStateProvider viewStateProvider;
+    private ViewStateTransactionListener viewStateTransactionListener;
     private boolean transactionComplete = false;
 
     public MvpViewState(ViewStateListener viewStateListener) {
@@ -22,7 +23,7 @@ public class MvpViewState {
     public void restore() {
         for (int i = 0; i < states.size(); i++) {
             State state = states.get(i);
-            viewStateListener.apply(state.id, state.data);
+            if (viewStateListener != null) viewStateListener.apply(state.id, state.data);
         }
         if (transactionComplete) {
             states.clear();
@@ -37,17 +38,27 @@ public class MvpViewState {
     public void begin() {
         transactionComplete = false;
         states.clear();
+        if (viewStateTransactionListener != null) viewStateTransactionListener.begin();
     }
 
     public void end() {
         transactionComplete = true;
         if (viewStateProvider.isViewActive()) {
             states.clear();
+            if (viewStateTransactionListener != null) viewStateTransactionListener.end();
         }
     }
 
     public void setViewStateProvider(ViewStateProvider viewStateProvider) {
         this.viewStateProvider = viewStateProvider;
+    }
+
+    public void setViewStateTransactionListener(ViewStateTransactionListener viewStateTransactionListener) {
+        this.viewStateTransactionListener = viewStateTransactionListener;
+    }
+
+    public void setViewStateListener(ViewStateListener viewStateListener) {
+        this.viewStateListener = viewStateListener;
     }
 
     public boolean isTransactionComplete() {
@@ -56,6 +67,12 @@ public class MvpViewState {
 
     public interface ViewStateListener {
         void apply(int operation, Parcelable data);
+    }
+
+    public interface ViewStateTransactionListener {
+        void begin();
+
+        void end();
     }
 
     public interface ViewStateProvider {
