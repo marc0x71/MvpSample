@@ -1,9 +1,12 @@
-package com.marc0x71.mvpsample.mvp;
+package com.marc0x71.mvpsimple.mvp.view;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.marc0x71.mvpsimple.mvp.MvpPresenterManager;
+import com.marc0x71.mvpsimple.mvp.presenter.MvpBasePresenter;
 
 /**
  * Created on 16/06/2016.

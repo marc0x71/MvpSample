@@ -1,4 +1,4 @@
-package com.marc0x71.mvpsample.mvp;
+package com.marc0x71.mvpsimple.mvp.viewstate;
 
 import android.os.Parcelable;
 

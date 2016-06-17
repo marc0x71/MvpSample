@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.marc0x71.mvpsample.mvp.MvpActivity;
+import com.marc0x71.mvpsimple.mvp.view.MvpActivity;
 
 public class MainActivity extends MvpActivity<MainView, MainPresenter> implements MainView {
     private static final String TAG = "MainActivity";

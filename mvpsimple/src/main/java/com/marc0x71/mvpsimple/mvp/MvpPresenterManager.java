@@ -1,4 +1,6 @@
-package com.marc0x71.mvpsample.mvp;
+package com.marc0x71.mvpsimple.mvp;
+
+import com.marc0x71.mvpsimple.mvp.presenter.MvpPresenter;
 
 import java.util.HashMap;
 

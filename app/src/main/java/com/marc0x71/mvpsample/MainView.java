@@ -1,6 +1,6 @@
 package com.marc0x71.mvpsample;
 
-import com.marc0x71.mvpsample.mvp.MvpView;
+import com.marc0x71.mvpsimple.mvp.view.MvpView;
 
 /**
  * Created on 15/06/2016.

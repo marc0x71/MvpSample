@@ -1,6 +1,9 @@
-package com.marc0x71.mvpsample.mvp;
+package com.marc0x71.mvpsimple.mvp.presenter;
 
 import android.os.Bundle;
+
+import com.marc0x71.mvpsimple.mvp.view.MvpView;
+import com.marc0x71.mvpsimple.mvp.viewstate.MvpViewState;
 
 /**
  * Created on 16/06/2016.

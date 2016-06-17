@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.marc0x71.mvpsample.model.Number;
-import com.marc0x71.mvpsample.mvp.MvpBasePresenter;
-import com.marc0x71.mvpsample.mvp.MvpViewState;
+import com.marc0x71.mvpsimple.mvp.presenter.MvpBasePresenter;
+import com.marc0x71.mvpsimple.mvp.viewstate.MvpViewState;
 
 /**
  * Created on 15/06/2016.
