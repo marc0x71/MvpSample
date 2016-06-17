@@ -35,6 +35,12 @@ public class MvpViewState {
         states.add(new State(operation, data));
     }
 
+    public void set(int operation, Parcelable data) {
+        begin();
+        states.add(new State(operation, data));
+        end();
+    }
+
     public void begin() {
         transactionComplete = false;
         states.clear();
@@ -43,7 +49,7 @@ public class MvpViewState {
 
     public void end() {
         transactionComplete = true;
-        if (viewStateProvider.isViewActive()) {
+        if (viewStateProvider != null && viewStateProvider.isViewActive()) {
             states.clear();
             if (viewStateTransactionListener != null) viewStateTransactionListener.end();
         }
