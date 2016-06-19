@@ -43,7 +43,7 @@ public abstract class MvpBasePresenter<V extends MvpView> implements MvpPresente
 
     @Override
     public boolean isClosable() {
-        return retainInstance || viewState == null || viewState.isTransactionComplete();
+        return retainInstance || viewState == null || viewState.isPendingViewActions();
     }
 
     @Override

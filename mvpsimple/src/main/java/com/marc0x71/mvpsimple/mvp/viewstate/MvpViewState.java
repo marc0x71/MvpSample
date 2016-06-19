@@ -14,7 +14,7 @@ public class MvpViewState {
     private ViewStateListener viewStateListener;
     private ViewStateProvider viewStateProvider;
     private ViewStateTransactionListener viewStateTransactionListener;
-    private boolean transactionComplete = false;
+    private boolean pendingViewActions = false;
 
     public MvpViewState(ViewStateListener viewStateListener) {
         this.viewStateListener = viewStateListener;
@@ -25,10 +25,10 @@ public class MvpViewState {
             State state = states.get(i);
             if (viewStateListener != null) viewStateListener.apply(state.id, state.data);
         }
-        if (transactionComplete) {
+        if (pendingViewActions) {
             states.clear();
         }
-        transactionComplete = false;
+        pendingViewActions = false;
     }
 
     public void add(int operation, Parcelable data) {
@@ -37,18 +37,18 @@ public class MvpViewState {
 
     public void set(int operation, Parcelable data) {
         begin();
-        states.add(new State(operation, data));
+        add(operation, data);
         end();
     }
 
     public void begin() {
-        transactionComplete = false;
+        pendingViewActions = false;
         states.clear();
         if (viewStateTransactionListener != null) viewStateTransactionListener.begin();
     }
 
     public void end() {
-        transactionComplete = true;
+        pendingViewActions = true;
         if (viewStateProvider != null && viewStateProvider.isViewActive()) {
             states.clear();
             if (viewStateTransactionListener != null) viewStateTransactionListener.end();
@@ -67,8 +67,8 @@ public class MvpViewState {
         this.viewStateListener = viewStateListener;
     }
 
-    public boolean isTransactionComplete() {
-        return transactionComplete;
+    public boolean isPendingViewActions() {
+        return pendingViewActions;
     }
 
     public interface ViewStateListener {
